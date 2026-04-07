@@ -46,11 +46,11 @@
       <form id="car-form">
         <div class="form-group">
           <label for="location">Location</label>
-          <select id="location" required>
-            <option value="">Select location...</option>
-            <option value="Pendik">Pendik</option>
-            <option value="Yalova">Yalova</option>
-          </select>
+          <input type="text" id="location" list="locations" placeholder="Select or type location..." required>
+          <datalist id="locations">
+            <option value="Pendik">
+            <option value="Yalova">
+          </datalist>
         </div>
         <button type="submit">Add Car</button>
       </form>
