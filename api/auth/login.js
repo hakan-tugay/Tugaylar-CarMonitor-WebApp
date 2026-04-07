@@ -15,7 +15,7 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Username and password are required' });
   }
 
-  const rows = await sql`SELECT * FROM users WHERE username = ${username.trim()}`;
+  const rows = await sql`SELECT * FROM users WHERE LOWER(username) = LOWER(${username.trim()})`;
   if (rows.length === 0) {
     return res.status(401).json({ error: 'Invalid username or password' });
   }

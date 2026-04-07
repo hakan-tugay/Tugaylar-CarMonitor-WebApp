@@ -21,7 +21,7 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Password must be at least 4 characters' });
   }
 
-  const existing = await sql`SELECT id FROM users WHERE username = ${username.trim()}`;
+  const existing = await sql`SELECT id FROM users WHERE LOWER(username) = LOWER(${username.trim()})`;
   if (existing.length > 0) {
     return res.status(409).json({ error: 'Username already taken' });
   }
@@ -29,7 +29,7 @@ module.exports = async function handler(req, res) {
   const passwordHash = await bcrypt.hash(password, 10);
   const rows = await sql`
     INSERT INTO users (username, password_hash)
-    VALUES (${username.trim()}, ${passwordHash})
+    VALUES (${username.trim().toLowerCase()}, ${passwordHash})
     RETURNING id, username
   `;
 
