@@ -307,6 +307,50 @@ async function deleteUser(userId) {
 
 // --- App ---
 
+function getDateKey(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function renderCarCard(car) {
+  const card = document.createElement('div');
+  card.className = 'car-card';
+
+  const date = new Date(car.created_at);
+  const timeStr = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+
+  let imagesHtml = '';
+  if (car.images.length > 0) {
+    imagesHtml = '<div class="card-images">' +
+      car.images.map(img =>
+        `<div class="image-wrapper" onclick="onImageClick(this, ${car.id}, ${car.images.indexOf(img)}, ${img.id})">
+          <img src="${escapeHtml(img.url)}" alt="Car photo">
+          <span class="delete-overlay">&times;</span>
+        </div>`
+      ).join('') +
+      '</div>';
+  }
+
+  card.innerHTML = `
+    <div class="card-body">
+      <div class="card-meta">
+        <span>${timeStr}</span>
+      </div>
+      ${imagesHtml}
+      <div class="card-actions">
+        <label class="btn-add-photos">
+          Add Photos
+          <input type="file" multiple accept="image/*" onchange="uploadPhotos(${car.id}, this.files)" hidden>
+        </label>
+        ${car.images.length > 0 ? `<button class="btn-edit-photos" onclick="toggleDeleteMode(this)">Edit Photos</button>` : ''}
+        <button class="btn-delete" onclick="deleteCar(${car.id})">Delete</button>
+      </div>
+    </div>
+  `;
+
+  return card;
+}
+
 async function loadCars() {
   const res = await fetch('/api/cars', { headers: authHeaders() });
   if (res.status === 401) { logout(); return; }
@@ -322,47 +366,34 @@ async function loadCars() {
   emptyMessage.classList.add('hidden');
   carsData = cars;
 
+  // Group by date, then by location
+  const groups = {};
   for (const car of cars) {
-    const card = document.createElement('div');
-    card.className = 'car-card';
+    const dateKey = getDateKey(car.created_at);
+    if (!groups[dateKey]) groups[dateKey] = {};
+    if (!groups[dateKey][car.location]) groups[dateKey][car.location] = [];
+    groups[dateKey][car.location].push(car);
+  }
 
-    const date = new Date(car.created_at);
-    const dateStr = date.toLocaleDateString(undefined, {
-      year: 'numeric', month: 'short', day: 'numeric',
-      hour: '2-digit', minute: '2-digit'
-    });
+  for (const [dateKey, locations] of Object.entries(groups)) {
+    const dateHeader = document.createElement('h3');
+    dateHeader.className = 'group-date-header';
+    dateHeader.textContent = dateKey;
+    carsGrid.appendChild(dateHeader);
 
-    let imagesHtml = '';
-    if (car.images.length > 0) {
-      imagesHtml = '<div class="card-images">' +
-        car.images.map(img =>
-          `<div class="image-wrapper" onclick="onImageClick(this, ${car.id}, ${car.images.indexOf(img)}, ${img.id})">
-            <img src="${escapeHtml(img.url)}" alt="Car photo">
-            <span class="delete-overlay">&times;</span>
-          </div>`
-        ).join('') +
-        '</div>';
+    for (const [location, locationCars] of Object.entries(locations)) {
+      const locationHeader = document.createElement('h4');
+      locationHeader.className = 'group-location-header';
+      locationHeader.textContent = location;
+      carsGrid.appendChild(locationHeader);
+
+      const grid = document.createElement('div');
+      grid.className = 'cars-group-grid';
+      for (const car of locationCars) {
+        grid.appendChild(renderCarCard(car));
+      }
+      carsGrid.appendChild(grid);
     }
-
-    card.innerHTML = `
-      <div class="card-body">
-        <div class="card-meta">
-          <span>${dateStr}</span>
-        </div>
-        <div class="card-location">${escapeHtml(car.location)}</div>
-        ${imagesHtml}
-        <div class="card-actions">
-          <label class="btn-add-photos">
-            Add Photos
-            <input type="file" multiple accept="image/*" onchange="uploadPhotos(${car.id}, this.files)" hidden>
-          </label>
-          ${car.images.length > 0 ? `<button class="btn-edit-photos" onclick="toggleDeleteMode(this)">Edit Photos</button>` : ''}
-          <button class="btn-delete" onclick="deleteCar(${car.id})">Delete</button>
-        </div>
-      </div>
-    `;
-
-    carsGrid.appendChild(card);
   }
 }
 
