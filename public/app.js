@@ -30,7 +30,7 @@ async function loadCars() {
       imagesHtml = '<div class="card-images">' +
         car.images.map(img =>
           `<div class="image-wrapper">
-            <img src="${escapeHtml(img.url)}" alt="Car photo" onclick="window.open('${escapeHtml(img.url)}', '_blank')">
+            <img src="${escapeHtml(img.url)}" alt="Car photo" onclick="openLightbox('${escapeHtml(img.url)}')">
             <button class="btn-delete-image" onclick="deleteImage(${img.id})" title="Delete photo">&times;</button>
           </div>`
         ).join('') +
@@ -142,6 +142,19 @@ function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
+}
+
+function openLightbox(url) {
+  const overlay = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  img.src = url;
+  overlay.classList.remove('hidden');
+}
+
+function closeLightbox() {
+  const overlay = document.getElementById('lightbox');
+  overlay.classList.add('hidden');
+  document.getElementById('lightbox-img').src = '';
 }
 
 carForm.addEventListener('submit', createCar);
