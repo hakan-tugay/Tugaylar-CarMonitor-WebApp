@@ -115,8 +115,11 @@ function addWatermark(file) {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
       ctx.fillRect(x - padding * 0.5, y - fontSize, textMetrics.width + padding, fontSize + padding * 0.5);
 
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.shadowColor = 'rgba(0, 255, 0, 0.8)';
+      ctx.shadowBlur = fontSize * 0.6;
+      ctx.fillStyle = '#39ff14';
       ctx.fillText(dateStr, x, y);
+      ctx.shadowBlur = 0;
 
       canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.92);
     };
