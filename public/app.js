@@ -316,9 +316,6 @@ function renderCarCard(car) {
   const card = document.createElement('div');
   card.className = 'car-card';
 
-  const date = new Date(car.created_at);
-  const timeStr = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-
   let imagesHtml = '';
   if (car.images.length > 0) {
     imagesHtml = '<div class="card-images">' +
@@ -333,9 +330,6 @@ function renderCarCard(car) {
 
   card.innerHTML = `
     <div class="card-body">
-      <div class="card-meta">
-        <span>${timeStr}</span>
-      </div>
       ${car.chassis ? `<div class="card-chassis">${escapeHtml(car.chassis)}</div>` : ''}
       ${imagesHtml}
       <div class="card-actions">
