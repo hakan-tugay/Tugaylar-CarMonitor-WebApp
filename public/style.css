@@ -83,6 +83,10 @@ header p {
   padding: 1rem;
 }
 
+#auth-section.hidden {
+  display: none;
+}
+
 .auth-box {
   background: var(--card-bg);
   padding: 2rem;
