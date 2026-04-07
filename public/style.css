@@ -1,18 +1,18 @@
 :root {
   --primary: #3b82f6;
   --primary-hover: #2563eb;
-  --primary-glow: rgba(59, 130, 246, 0.3);
-  --bg: #0f172a;
-  --bg-secondary: #1e293b;
-  --card-bg: #1e293b;
-  --card-border: #334155;
-  --text: #f1f5f9;
-  --text-light: #94a3b8;
-  --border: #334155;
+  --primary-glow: rgba(59, 130, 246, 0.15);
+  --bg: #eef2ff;
+  --bg-secondary: #ffffff;
+  --card-bg: #ffffff;
+  --card-border: #dbeafe;
+  --text: #1e293b;
+  --text-light: #64748b;
+  --border: #cbd5e1;
   --danger: #ef4444;
   --danger-hover: #dc2626;
   --radius: 10px;
-  --shadow: 0 4px 12px rgba(0,0,0,0.3);
+  --shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
 }
 
 * {
@@ -30,9 +30,10 @@ body {
 
 header {
   background: var(--bg-secondary);
-  color: white;
+  color: var(--text);
   padding: 1.5rem 1rem;
   border-bottom: 1px solid var(--card-border);
+  box-shadow: 0 1px 4px rgba(59, 130, 246, 0.08);
 }
 
 .header-content {
@@ -71,12 +72,13 @@ header p {
 #username-display {
   color: var(--primary);
   font-weight: 600;
+  font-size: 0.9rem;
 }
 
 #logout-btn {
   background: transparent;
   color: var(--text-light);
-  border: 1px solid var(--card-border);
+  border: 1px solid var(--border);
   padding: 0.35rem 0.8rem;
   border-radius: var(--radius);
   font-size: 0.85rem;
@@ -185,7 +187,7 @@ h2 {
   font-size: 1rem;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
-  background: var(--bg);
+  background: #ffffff;
   color: var(--text);
 }
 
