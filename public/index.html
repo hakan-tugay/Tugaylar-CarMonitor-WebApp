@@ -33,7 +33,10 @@
     </section>
   </main>
   <div id="lightbox" class="hidden" onclick="closeLightbox()">
-    <img id="lightbox-img" src="" alt="Full size photo">
+    <button id="lightbox-prev" class="lightbox-nav lightbox-prev" onclick="lightboxPrev(event)">&#8249;</button>
+    <img id="lightbox-img" src="" alt="Full size photo" onclick="event.stopPropagation()">
+    <button id="lightbox-next" class="lightbox-nav lightbox-next" onclick="lightboxNext(event)">&#8250;</button>
+    <span id="lightbox-counter" class="lightbox-counter"></span>
   </div>
   <script src="app.js"></script>
 </body>

@@ -1,6 +1,7 @@
 const carsGrid = document.getElementById('cars-grid');
 const emptyMessage = document.getElementById('empty-message');
 const carForm = document.getElementById('car-form');
+let carsData = [];
 
 async function loadCars() {
   const res = await fetch('/api/cars');
@@ -14,6 +15,7 @@ async function loadCars() {
   }
 
   emptyMessage.classList.add('hidden');
+  carsData = cars;
 
   for (const car of cars) {
     const card = document.createElement('div');
@@ -29,7 +31,7 @@ async function loadCars() {
     if (car.images.length > 0) {
       imagesHtml = '<div class="card-images">' +
         car.images.map(img =>
-          `<div class="image-wrapper" onclick="onImageClick(this, '${escapeHtml(img.url)}', ${img.id})">
+          `<div class="image-wrapper" onclick="onImageClick(this, ${car.id}, ${car.images.indexOf(img)}, ${img.id})">
             <img src="${escapeHtml(img.url)}" alt="Car photo">
             <span class="delete-overlay">&times;</span>
           </div>`
@@ -121,12 +123,12 @@ function toggleDeleteMode(btn) {
   btn.textContent = isActive ? 'Done' : 'Edit Photos';
 }
 
-function onImageClick(wrapper, url, imageId) {
+function onImageClick(wrapper, carId, imageIndex, imageId) {
   const card = wrapper.closest('.car-card');
   if (card.classList.contains('delete-mode')) {
     deleteImage(imageId);
   } else {
-    openLightbox(url);
+    openLightbox(carId, imageIndex);
   }
 }
 
@@ -160,18 +162,55 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-function openLightbox(url) {
-  const overlay = document.getElementById('lightbox');
+let lightboxCarId = null;
+let lightboxIndex = 0;
+
+function openLightbox(carId, index) {
+  lightboxCarId = carId;
+  lightboxIndex = index;
+  updateLightboxImage();
+  document.getElementById('lightbox').classList.remove('hidden');
+}
+
+function updateLightboxImage() {
+  const car = carsData.find(c => c.id === lightboxCarId);
+  if (!car) return;
   const img = document.getElementById('lightbox-img');
-  img.src = url;
-  overlay.classList.remove('hidden');
+  img.src = car.images[lightboxIndex].url;
+  const counter = document.getElementById('lightbox-counter');
+  counter.textContent = car.images.length > 1 ? `${lightboxIndex + 1} / ${car.images.length}` : '';
+  document.getElementById('lightbox-prev').style.display = car.images.length > 1 ? '' : 'none';
+  document.getElementById('lightbox-next').style.display = car.images.length > 1 ? '' : 'none';
+}
+
+function lightboxPrev(e) {
+  e.stopPropagation();
+  const car = carsData.find(c => c.id === lightboxCarId);
+  if (!car) return;
+  lightboxIndex = (lightboxIndex - 1 + car.images.length) % car.images.length;
+  updateLightboxImage();
+}
+
+function lightboxNext(e) {
+  e.stopPropagation();
+  const car = carsData.find(c => c.id === lightboxCarId);
+  if (!car) return;
+  lightboxIndex = (lightboxIndex + 1) % car.images.length;
+  updateLightboxImage();
 }
 
 function closeLightbox() {
-  const overlay = document.getElementById('lightbox');
-  overlay.classList.add('hidden');
+  document.getElementById('lightbox').classList.add('hidden');
   document.getElementById('lightbox-img').src = '';
+  lightboxCarId = null;
 }
+
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('lightbox').classList.contains('hidden')) return;
+  if (e.key === 'ArrowLeft') lightboxPrev(e);
+  else if (e.key === 'ArrowRight') lightboxNext(e);
+  else if (e.key === 'Escape') closeLightbox();
+});
 
 carForm.addEventListener('submit', createCar);
 document.addEventListener('DOMContentLoaded', loadCars);
