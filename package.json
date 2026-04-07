@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "Simple car monitoring web application",
   "dependencies": {
-    "@vercel/blob": "^0.27.0",
     "@neondatabase/serverless": "^0.10.0",
+    "@vercel/blob": "^0.27.0",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "^17.4.1"
   }
 }

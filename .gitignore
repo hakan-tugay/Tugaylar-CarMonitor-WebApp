@@ -9,3 +9,5 @@ carmonitor.db-wal
 .claude/
 
 .vercel
+.env*.local
+seed.js

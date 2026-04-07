@@ -336,6 +336,7 @@ function renderCarCard(car) {
       <div class="card-meta">
         <span>${timeStr}</span>
       </div>
+      ${car.chassis ? `<div class="card-chassis">${escapeHtml(car.chassis)}</div>` : ''}
       ${imagesHtml}
       <div class="card-actions">
         <label class="btn-add-photos">
@@ -404,10 +405,13 @@ async function createCar(e) {
   submitBtn.disabled = true;
 
   try {
+    const chassis = document.getElementById('chassis').value.trim();
+    if (!chassis) return;
+
     const carRes = await fetch('/api/cars', {
       method: 'POST',
       headers: authHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({ location })
+      body: JSON.stringify({ location, chassis })
     });
 
     if (carRes.status === 401) { logout(); return; }

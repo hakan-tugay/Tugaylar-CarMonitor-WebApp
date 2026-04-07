@@ -433,10 +433,12 @@ button[type="submit"]:disabled {
   color: var(--text-light);
 }
 
-.car-card .card-location {
-  font-size: 1.1rem;
+.car-card .card-chassis {
+  font-size: 0.95rem;
   font-weight: 600;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-family: monospace;
+  color: var(--text);
 }
 
 .car-card .card-images {

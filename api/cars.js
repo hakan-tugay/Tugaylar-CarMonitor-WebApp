@@ -25,13 +25,16 @@ module.exports = async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { location } = req.body;
+    const { location, chassis } = req.body;
     if (!location || !location.trim()) {
       return res.status(400).json({ error: 'Location is required' });
     }
+    if (!chassis || !chassis.trim()) {
+      return res.status(400).json({ error: 'Chassis number is required' });
+    }
 
     const rows = await sql`
-      INSERT INTO cars (location) VALUES (${location.trim()})
+      INSERT INTO cars (location, chassis) VALUES (${location.trim()}, ${chassis.trim()})
       RETURNING *
     `;
     return res.status(201).json({ ...rows[0], images: [] });
