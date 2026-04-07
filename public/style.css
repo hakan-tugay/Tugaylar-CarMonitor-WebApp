@@ -128,6 +128,119 @@ header p {
   text-decoration: underline;
 }
 
+/* User Management */
+#users-section {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  margin-bottom: 2rem;
+}
+
+#users-section.hidden {
+  display: none;
+}
+
+.users-create-box {
+  margin-bottom: 1.5rem;
+}
+
+.users-create-box h3 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-light);
+}
+
+.form-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.form-row input {
+  flex: 1;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.form-row input:focus {
+  border-color: var(--primary);
+}
+
+.form-row button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.form-row button:hover {
+  background: var(--primary-hover);
+}
+
+.success-message {
+  color: #16a34a;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.users-table th,
+.users-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.users-table th {
+  color: var(--text-light);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.btn-delete-user {
+  background: none;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-delete-user:hover {
+  background: var(--danger);
+  color: white;
+}
+
+#manage-users-btn {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#manage-users-btn:hover {
+  background: rgba(255,255,255,0.3);
+}
+
 main {
   max-width: 960px;
   margin: 0 auto;

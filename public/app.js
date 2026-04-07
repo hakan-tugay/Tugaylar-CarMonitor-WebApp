@@ -78,6 +78,95 @@ function logout() {
   showAuth();
 }
 
+// --- User Management ---
+
+function toggleUsersPanel() {
+  const section = document.getElementById('users-section');
+  const isVisible = !section.classList.contains('hidden');
+  if (isVisible) {
+    section.classList.add('hidden');
+  } else {
+    section.classList.remove('hidden');
+    loadUsers();
+  }
+}
+
+async function loadUsers() {
+  const res = await fetch('/api/auth/users', { headers: authHeaders() });
+  if (res.status === 401) { logout(); return; }
+  const users = await res.json();
+
+  const list = document.getElementById('users-list');
+  if (users.length === 0) {
+    list.innerHTML = '<p class="no-users">No users found.</p>';
+    return;
+  }
+
+  const currentUsername = localStorage.getItem('username');
+  list.innerHTML = '<table class="users-table"><thead><tr><th>Username</th><th>Created</th><th></th></tr></thead><tbody>' +
+    users.map(u => {
+      const date = new Date(u.created_at).toLocaleDateString(undefined, {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+      const isSelf = u.username === currentUsername;
+      return `<tr>
+        <td>${escapeHtml(u.username)}${isSelf ? ' (you)' : ''}</td>
+        <td>${date}</td>
+        <td>${isSelf ? '' : `<button class="btn-delete-user" onclick="deleteUser(${u.id})">Delete</button>`}</td>
+      </tr>`;
+    }).join('') +
+    '</tbody></table>';
+}
+
+document.getElementById('create-user-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errorEl = document.getElementById('create-user-error');
+  const successEl = document.getElementById('create-user-success');
+  errorEl.classList.add('hidden');
+  successEl.classList.add('hidden');
+
+  const username = document.getElementById('new-username').value.trim();
+  const password = document.getElementById('new-password').value;
+
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      errorEl.textContent = data.error;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    successEl.textContent = `User "${data.username}" created`;
+    successEl.classList.remove('hidden');
+    document.getElementById('new-username').value = '';
+    document.getElementById('new-password').value = '';
+    loadUsers();
+  } catch (err) {
+    errorEl.textContent = 'Connection error';
+    errorEl.classList.remove('hidden');
+  }
+});
+
+async function deleteUser(userId) {
+  if (!confirm('Delete this user?')) return;
+  try {
+    const res = await fetch(`/api/auth/users/${userId}`, { method: 'DELETE', headers: authHeaders() });
+    if (res.status === 401) { logout(); return; }
+    if (!res.ok) {
+      const data = await res.json();
+      alert(data.error || 'Failed to delete user');
+      return;
+    }
+    loadUsers();
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+}
+
 // --- App ---
 
 async function loadCars() {

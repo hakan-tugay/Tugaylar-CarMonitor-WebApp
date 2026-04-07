@@ -15,6 +15,7 @@
       </div>
       <div id="user-info" class="hidden">
         <span id="username-display"></span>
+        <button id="manage-users-btn" onclick="toggleUsersPanel()">Manage Users</button>
         <button id="logout-btn" onclick="logout()">Logout</button>
       </div>
     </div>
@@ -59,6 +60,23 @@
       <h2>Car Records</h2>
       <div id="cars-grid"></div>
       <p id="empty-message" class="hidden">No car records yet. Add one above!</p>
+    </section>
+    <!-- Users Management -->
+    <section id="users-section" class="hidden">
+      <h2>Manage Users</h2>
+      <div class="users-create-box">
+        <h3>Create New User</h3>
+        <form id="create-user-form">
+          <div class="form-row">
+            <input type="text" id="new-username" placeholder="Username" required minlength="3">
+            <input type="password" id="new-password" placeholder="Password" required minlength="4">
+            <button type="submit">Create</button>
+          </div>
+          <p id="create-user-error" class="auth-error hidden"></p>
+          <p id="create-user-success" class="success-message hidden"></p>
+        </form>
+      </div>
+      <div id="users-list"></div>
     </section>
   </main>
   <div id="lightbox" class="hidden" onclick="closeLightbox()">

@@ -1,8 +1,9 @@
 const bcrypt = require('bcryptjs');
 const { getDb, ensureTables } = require('../../lib/db');
-const { createToken } = require('../../lib/auth');
+const { createToken, requireAuth } = require('../../lib/auth');
 
 module.exports = async function handler(req, res) {
+  if (!requireAuth(req, res)) return;
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -33,6 +34,5 @@ module.exports = async function handler(req, res) {
     RETURNING id, username
   `;
 
-  const token = createToken(rows[0]);
-  res.status(201).json({ token, username: rows[0].username });
+  res.status(201).json({ id: rows[0].id, username: rows[0].username });
 };
