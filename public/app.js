@@ -84,12 +84,21 @@ function logout() {
 // --- User Management ---
 
 function toggleUsersPanel() {
-  const section = document.getElementById('users-section');
-  const isVisible = !section.classList.contains('hidden');
+  const usersSection = document.getElementById('users-section');
+  const createSection = document.getElementById('create-section');
+  const carsSection = document.getElementById('cars-section');
+  const isVisible = !usersSection.classList.contains('hidden');
+
   if (isVisible) {
-    section.classList.add('hidden');
+    usersSection.classList.add('hidden');
+    createSection.classList.remove('hidden');
+    carsSection.classList.remove('hidden');
+    document.getElementById('manage-users-btn').textContent = 'Manage Users';
   } else {
-    section.classList.remove('hidden');
+    usersSection.classList.remove('hidden');
+    createSection.classList.add('hidden');
+    carsSection.classList.add('hidden');
+    document.getElementById('manage-users-btn').textContent = 'Back to Cars';
     loadUsers();
   }
 }
