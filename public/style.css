@@ -155,8 +155,10 @@ button[type="submit"]:disabled {
 }
 
 .car-card .card-images .image-wrapper {
-  position: relative;
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .car-card .card-images img {
@@ -173,30 +175,20 @@ button[type="submit"]:disabled {
 }
 
 .car-card .btn-delete-image {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  background: rgba(0,0,0,0.6);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  font-size: 14px;
-  line-height: 18px;
-  text-align: center;
+  background: none;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: var(--radius);
+  font-size: 0.75rem;
   cursor: pointer;
-  padding: 0;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.car-card .image-wrapper:hover .btn-delete-image {
-  opacity: 1;
+  padding: 0.2rem 0.5rem;
+  min-height: 28px;
+  transition: all 0.2s;
 }
 
 .car-card .btn-delete-image:hover {
   background: var(--danger);
+  color: white;
 }
 
 .car-card .card-actions {

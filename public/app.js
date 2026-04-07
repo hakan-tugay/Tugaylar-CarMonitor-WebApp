@@ -31,7 +31,7 @@ async function loadCars() {
         car.images.map(img =>
           `<div class="image-wrapper">
             <img src="${escapeHtml(img.url)}" alt="Car photo" onclick="openLightbox('${escapeHtml(img.url)}')">
-            <button class="btn-delete-image" onclick="deleteImage(${img.id})" title="Delete photo">&times;</button>
+            <button class="btn-delete-image" onclick="event.stopPropagation(); deleteImage(${img.id})" title="Delete photo">Delete</button>
           </div>`
         ).join('') +
         '</div>';
