@@ -15,6 +15,7 @@
       </div>
       <div id="user-info" class="hidden">
         <span id="username-display"></span>
+        <button id="manage-locations-btn" onclick="toggleLocationsPanel()">Manage Locations</button>
         <button id="manage-users-btn" onclick="toggleUsersPanel()">Manage Users</button>
         <button id="logout-btn" onclick="logout()">Logout</button>
       </div>
@@ -48,10 +49,7 @@
         <div class="form-group">
           <label for="location">Location</label>
           <input type="text" id="location" list="locations" placeholder="Select or type location..." required>
-          <datalist id="locations">
-            <option value="Pendik">
-            <option value="Yalova">
-          </datalist>
+          <datalist id="locations"></datalist>
         </div>
         <button type="submit">Add Car</button>
       </form>
@@ -61,6 +59,23 @@
       <div id="cars-grid"></div>
       <p id="empty-message" class="hidden">No car records yet. Add one above!</p>
     </section>
+    <!-- Locations Management -->
+    <section id="locations-section" class="hidden">
+      <h2>Manage Locations</h2>
+      <div class="locations-create-box">
+        <h3>Add New Location</h3>
+        <form id="create-location-form">
+          <div class="form-row">
+            <input type="text" id="new-location-name" placeholder="Location name" required>
+            <button type="submit">Add</button>
+          </div>
+          <p id="create-location-error" class="auth-error hidden"></p>
+          <p id="create-location-success" class="success-message hidden"></p>
+        </form>
+      </div>
+      <div id="locations-list"></div>
+    </section>
+
     <!-- Users Management -->
     <section id="users-section" class="hidden">
       <h2>Manage Users</h2>

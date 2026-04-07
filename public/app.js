@@ -29,7 +29,12 @@ function showApp(username) {
   document.getElementById('username-display').textContent = username;
   const isAdmin = username.toLowerCase().includes('tugay');
   document.getElementById('manage-users-btn').style.display = isAdmin ? '' : 'none';
-  if (!isAdmin) document.getElementById('users-section').classList.add('hidden');
+  document.getElementById('manage-locations-btn').style.display = isAdmin ? '' : 'none';
+  if (!isAdmin) {
+    document.getElementById('users-section').classList.add('hidden');
+    document.getElementById('locations-section').classList.add('hidden');
+  }
+  loadLocationsDatalist();
   loadCars();
 }
 
@@ -81,10 +86,116 @@ function logout() {
   showAuth();
 }
 
+// --- Locations ---
+
+async function loadLocationsDatalist() {
+  const res = await fetch('/api/locations', { headers: authHeaders() });
+  if (res.status === 401) { logout(); return; }
+  const locations = await res.json();
+  const datalist = document.getElementById('locations');
+  datalist.innerHTML = locations.map(l => `<option value="${escapeHtml(l.name)}">`).join('');
+}
+
+// --- Location Management ---
+
+function toggleLocationsPanel() {
+  const locationsSection = document.getElementById('locations-section');
+  const usersSection = document.getElementById('users-section');
+  const createSection = document.getElementById('create-section');
+  const carsSection = document.getElementById('cars-section');
+  const isVisible = !locationsSection.classList.contains('hidden');
+
+  if (isVisible) {
+    locationsSection.classList.add('hidden');
+    createSection.classList.remove('hidden');
+    carsSection.classList.remove('hidden');
+    document.getElementById('manage-locations-btn').textContent = 'Manage Locations';
+  } else {
+    locationsSection.classList.remove('hidden');
+    usersSection.classList.add('hidden');
+    createSection.classList.add('hidden');
+    carsSection.classList.add('hidden');
+    document.getElementById('manage-locations-btn').textContent = 'Back to Cars';
+    document.getElementById('manage-users-btn').textContent = 'Manage Users';
+    loadLocations();
+  }
+}
+
+async function loadLocations() {
+  const res = await fetch('/api/locations', { headers: authHeaders() });
+  if (res.status === 401) { logout(); return; }
+  const locations = await res.json();
+
+  const list = document.getElementById('locations-list');
+  if (locations.length === 0) {
+    list.innerHTML = '<p class="no-users">No locations yet.</p>';
+    return;
+  }
+
+  list.innerHTML = '<table class="users-table"><thead><tr><th>Location</th><th></th></tr></thead><tbody>' +
+    locations.map(l =>
+      `<tr>
+        <td>${escapeHtml(l.name)}</td>
+        <td><button class="btn-delete-user" onclick="deleteLocation(${l.id})">Delete</button></td>
+      </tr>`
+    ).join('') +
+    '</tbody></table>';
+}
+
+document.getElementById('create-location-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errorEl = document.getElementById('create-location-error');
+  const successEl = document.getElementById('create-location-success');
+  errorEl.classList.add('hidden');
+  successEl.classList.add('hidden');
+
+  const name = document.getElementById('new-location-name').value.trim();
+
+  try {
+    const res = await fetch('/api/locations', {
+      method: 'POST',
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ name }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      errorEl.textContent = data.error;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    successEl.textContent = `Location "${data.name}" added`;
+    successEl.classList.remove('hidden');
+    document.getElementById('new-location-name').value = '';
+    loadLocations();
+    loadLocationsDatalist();
+  } catch (err) {
+    errorEl.textContent = 'Connection error';
+    errorEl.classList.remove('hidden');
+  }
+});
+
+async function deleteLocation(locationId) {
+  if (!confirm('Delete this location?')) return;
+  try {
+    const res = await fetch(`/api/locations/${locationId}`, { method: 'DELETE', headers: authHeaders() });
+    if (res.status === 401) { logout(); return; }
+    if (!res.ok) {
+      const data = await res.json();
+      alert(data.error || 'Failed to delete location');
+      return;
+    }
+    loadLocations();
+    loadLocationsDatalist();
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+}
+
 // --- User Management ---
 
 function toggleUsersPanel() {
   const usersSection = document.getElementById('users-section');
+  const locationsSection = document.getElementById('locations-section');
   const createSection = document.getElementById('create-section');
   const carsSection = document.getElementById('cars-section');
   const isVisible = !usersSection.classList.contains('hidden');
@@ -96,9 +207,11 @@ function toggleUsersPanel() {
     document.getElementById('manage-users-btn').textContent = 'Manage Users';
   } else {
     usersSection.classList.remove('hidden');
+    locationsSection.classList.add('hidden');
     createSection.classList.add('hidden');
     carsSection.classList.add('hidden');
     document.getElementById('manage-users-btn').textContent = 'Back to Cars';
+    document.getElementById('manage-locations-btn').textContent = 'Manage Locations';
     loadUsers();
   }
 }
