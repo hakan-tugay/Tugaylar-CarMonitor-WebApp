@@ -117,6 +117,10 @@
           <div class="form-row">
             <input type="text" id="new-username" placeholder="Username" required minlength="3">
             <input type="password" id="new-password" placeholder="Password" required minlength="4">
+            <select id="new-role">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
             <button type="submit">Create</button>
           </div>
           <p id="create-user-error" class="auth-error hidden"></p>

@@ -7,7 +7,7 @@ module.exports = async function handler(req, res) {
   const sql = getDb();
 
   if (req.method === 'GET') {
-    const users = await sql`SELECT id, username, created_at FROM users ORDER BY created_at DESC`;
+    const users = await sql`SELECT id, username, role, created_at FROM users ORDER BY created_at DESC`;
     return res.json(users);
   }
 

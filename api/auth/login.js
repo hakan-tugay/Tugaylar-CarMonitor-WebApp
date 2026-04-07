@@ -27,5 +27,5 @@ module.exports = async function handler(req, res) {
   }
 
   const token = createToken(user);
-  res.json({ token, username: user.username });
+  res.json({ token, username: user.username, role: user.role || 'user' });
 };

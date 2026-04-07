@@ -22,12 +22,12 @@ function showAuth() {
   document.getElementById('user-info').classList.add('hidden');
 }
 
-function showApp(username) {
+function showApp(username, role) {
   document.getElementById('auth-section').classList.add('hidden');
   document.getElementById('app-section').classList.remove('hidden');
   document.getElementById('user-info').classList.remove('hidden');
   document.getElementById('username-display').textContent = username;
-  const isAdmin = username.toLowerCase().includes('tugay');
+  const isAdmin = role === 'admin';
   document.getElementById('manage-users-btn').style.display = isAdmin ? '' : 'none';
   document.getElementById('manage-locations-btn').style.display = isAdmin ? '' : 'none';
   document.getElementById('manage-cars-btn').style.display = isAdmin ? '' : 'none';
@@ -74,7 +74,8 @@ document.getElementById('auth-form').addEventListener('submit', async (e) => {
     }
     localStorage.setItem('token', data.token);
     localStorage.setItem('username', data.username);
-    showApp(data.username);
+    localStorage.setItem('role', data.role || 'user');
+    showApp(data.username, data.role || 'user');
   } catch (err) {
     errorEl.textContent = 'Connection error';
     errorEl.classList.remove('hidden');
@@ -84,6 +85,7 @@ document.getElementById('auth-form').addEventListener('submit', async (e) => {
 function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('username');
+  localStorage.removeItem('role');
   showAuth();
 }
 
@@ -347,7 +349,7 @@ async function loadUsers() {
   }
 
   const currentUsername = localStorage.getItem('username');
-  list.innerHTML = '<table class="users-table"><thead><tr><th>Username</th><th>Created</th><th></th></tr></thead><tbody>' +
+  list.innerHTML = '<table class="users-table"><thead><tr><th>Username</th><th>Role</th><th>Created</th><th></th></tr></thead><tbody>' +
     users.map(u => {
       const date = new Date(u.created_at).toLocaleDateString(undefined, {
         year: 'numeric', month: 'short', day: 'numeric'
@@ -355,6 +357,7 @@ async function loadUsers() {
       const isSelf = u.username === currentUsername;
       return `<tr>
         <td>${escapeHtml(u.username)}${isSelf ? ' (you)' : ''}</td>
+        <td>${escapeHtml(u.role || 'user')}</td>
         <td>${date}</td>
         <td>${isSelf ? '' : `<button class="btn-delete-user" onclick="deleteUser(${u.id})">Delete</button>`}</td>
       </tr>`;
@@ -371,12 +374,13 @@ document.getElementById('create-user-form').addEventListener('submit', async (e)
 
   const username = document.getElementById('new-username').value.trim();
   const password = document.getElementById('new-password').value;
+  const role = document.getElementById('new-role').value;
 
   try {
     const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: authHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, password, role }),
     });
     const data = await res.json();
     if (!res.ok) {
@@ -696,8 +700,9 @@ carForm.addEventListener('submit', createCar);
 document.addEventListener('DOMContentLoaded', () => {
   const token = getToken();
   const username = localStorage.getItem('username');
+  const role = localStorage.getItem('role') || 'user';
   if (token && username) {
-    showApp(username);
+    showApp(username, role);
   } else {
     showAuth();
   }

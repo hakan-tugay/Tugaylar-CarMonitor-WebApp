@@ -11,7 +11,8 @@ module.exports = async function handler(req, res) {
   await ensureTables();
   const sql = getDb();
 
-  const { username, password } = req.body;
+  const { username, password, role } = req.body;
+  const userRole = (role === 'admin') ? 'admin' : 'user';
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password are required' });
   }
@@ -29,10 +30,10 @@ module.exports = async function handler(req, res) {
 
   const passwordHash = await bcrypt.hash(password, 10);
   const rows = await sql`
-    INSERT INTO users (username, password_hash)
-    VALUES (${username.trim().toLowerCase()}, ${passwordHash})
-    RETURNING id, username
+    INSERT INTO users (username, password_hash, role)
+    VALUES (${username.trim().toLowerCase()}, ${passwordHash}, ${userRole})
+    RETURNING id, username, role
   `;
 
-  res.status(201).json({ id: rows[0].id, username: rows[0].username });
+  res.status(201).json({ id: rows[0].id, username: rows[0].username, role: rows[0].role });
 };
