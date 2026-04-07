@@ -28,8 +28,7 @@ function showApp(username) {
   document.getElementById('user-info').classList.remove('hidden');
   document.getElementById('username-display').textContent = username;
   const isAdmin = username.toLowerCase().includes('tugay');
-  document.getElementById('manage-users-btn').style.display = isAdmin ? '' : 'none';
-  document.getElementById('manage-locations-btn').style.display = isAdmin ? '' : 'none';
+  document.getElementById('admin-menu').style.display = isAdmin ? '' : 'none';
   if (!isAdmin) {
     document.getElementById('users-section').classList.add('hidden');
     document.getElementById('locations-section').classList.add('hidden');
@@ -85,6 +84,20 @@ function logout() {
   localStorage.removeItem('username');
   showAuth();
 }
+
+// --- Dropdown ---
+
+function toggleDropdown() {
+  document.getElementById('dropdown-menu').classList.toggle('hidden');
+}
+
+function closeDropdown() {
+  document.getElementById('dropdown-menu').classList.add('hidden');
+}
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.dropdown')) closeDropdown();
+});
 
 // --- Locations ---
 

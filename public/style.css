@@ -248,8 +248,11 @@ header p {
   color: var(--text-light);
 }
 
-#manage-locations-btn,
-#manage-users-btn {
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
   background: rgba(255,255,255,0.2);
   color: white;
   border: 1px solid rgba(255,255,255,0.4);
@@ -260,8 +263,42 @@ header p {
   transition: background 0.2s;
 }
 
-#manage-users-btn:hover {
+.dropdown-toggle:hover {
   background: rgba(255,255,255,0.3);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.35rem;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  min-width: 180px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.dropdown-menu.hidden {
+  display: none;
+}
+
+.dropdown-menu button {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 0.9rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dropdown-menu button:hover {
+  background: var(--bg);
 }
 
 main {

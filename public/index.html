@@ -15,8 +15,13 @@
       </div>
       <div id="user-info" class="hidden">
         <span id="username-display"></span>
-        <button id="manage-locations-btn" onclick="toggleLocationsPanel()">Manage Locations</button>
-        <button id="manage-users-btn" onclick="toggleUsersPanel()">Manage Users</button>
+        <div id="admin-menu" class="dropdown" style="display:none">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">Admin</button>
+          <div id="dropdown-menu" class="dropdown-menu hidden">
+            <button id="manage-locations-btn" onclick="toggleLocationsPanel(); closeDropdown()">Manage Locations</button>
+            <button id="manage-users-btn" onclick="toggleUsersPanel(); closeDropdown()">Manage Users</button>
+          </div>
+        </div>
         <button id="logout-btn" onclick="logout()">Logout</button>
       </div>
     </div>
