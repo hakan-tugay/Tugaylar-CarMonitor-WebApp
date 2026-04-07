@@ -63,20 +63,6 @@ header p {
   opacity: 0.9;
 }
 
-#logout-btn {
-  background: rgba(255,255,255,0.2);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.4);
-  padding: 0.35rem 0.8rem;
-  border-radius: var(--radius);
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-#logout-btn:hover {
-  background: rgba(255,255,255,0.3);
-}
 
 /* Auth */
 #auth-section {
@@ -252,19 +238,26 @@ header p {
   position: relative;
 }
 
-.dropdown-toggle {
+.hamburger-btn {
   background: rgba(255,255,255,0.2);
   color: white;
   border: 1px solid rgba(255,255,255,0.4);
-  padding: 0.35rem 0.8rem;
+  padding: 0.3rem 0.6rem;
   border-radius: var(--radius);
-  font-size: 0.85rem;
+  font-size: 1.3rem;
+  line-height: 1;
   cursor: pointer;
   transition: background 0.2s;
 }
 
-.dropdown-toggle:hover {
+.hamburger-btn:hover {
   background: rgba(255,255,255,0.3);
+}
+
+.dropdown-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0.25rem 0;
 }
 
 .dropdown-menu {

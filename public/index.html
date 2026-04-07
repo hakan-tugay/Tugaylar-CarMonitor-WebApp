@@ -15,14 +15,15 @@
       </div>
       <div id="user-info" class="hidden">
         <span id="username-display"></span>
-        <div id="admin-menu" class="dropdown" style="display:none">
-          <button class="dropdown-toggle" onclick="toggleDropdown()">Admin</button>
+        <div class="dropdown">
+          <button class="hamburger-btn" onclick="toggleDropdown()">&#9776;</button>
           <div id="dropdown-menu" class="dropdown-menu hidden">
             <button id="manage-locations-btn" onclick="toggleLocationsPanel(); closeDropdown()">Manage Locations</button>
             <button id="manage-users-btn" onclick="toggleUsersPanel(); closeDropdown()">Manage Users</button>
+            <hr class="dropdown-divider">
+            <button onclick="logout(); closeDropdown()">Logout</button>
           </div>
         </div>
-        <button id="logout-btn" onclick="logout()">Logout</button>
       </div>
     </div>
   </header>
