@@ -383,23 +383,27 @@ button[type="submit"]:disabled {
   gap: 0.5rem;
 }
 
-.group-date-header {
-  font-size: 1.15rem;
-  color: var(--text);
-  margin-top: 1rem;
-  padding-bottom: 0.35rem;
+.group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.25rem;
+  padding-bottom: 0.4rem;
   border-bottom: 2px solid var(--primary);
+  font-size: 1rem;
+  font-weight: 600;
 }
 
-.group-date-header:first-child {
+.group-header:first-child {
   margin-top: 0;
 }
 
-.group-location-header {
-  font-size: 0.95rem;
-  color: var(--text-light);
-  margin-top: 0.5rem;
-  margin-left: 0.25rem;
+.group-date {
+  color: var(--text);
+}
+
+.group-location {
+  color: var(--text);
 }
 
 .cars-group-grid {

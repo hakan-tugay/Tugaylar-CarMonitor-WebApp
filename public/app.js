@@ -376,16 +376,11 @@ async function loadCars() {
   }
 
   for (const [dateKey, locations] of Object.entries(groups)) {
-    const dateHeader = document.createElement('h3');
-    dateHeader.className = 'group-date-header';
-    dateHeader.textContent = dateKey;
-    carsGrid.appendChild(dateHeader);
-
     for (const [location, locationCars] of Object.entries(locations)) {
-      const locationHeader = document.createElement('h4');
-      locationHeader.className = 'group-location-header';
-      locationHeader.textContent = location;
-      carsGrid.appendChild(locationHeader);
+      const groupHeader = document.createElement('div');
+      groupHeader.className = 'group-header';
+      groupHeader.innerHTML = `<span class="group-date">${escapeHtml(dateKey)}</span><span class="group-location">${escapeHtml(location)}</span>`;
+      carsGrid.appendChild(groupHeader);
 
       const grid = document.createElement('div');
       grid.className = 'cars-group-grid';
