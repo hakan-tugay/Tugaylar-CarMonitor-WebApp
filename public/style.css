@@ -151,6 +151,11 @@ button[type="submit"]:disabled {
   margin-bottom: 0.75rem;
 }
 
+.car-card .card-images .image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
 .car-card .card-images img {
   width: 80px;
   height: 80px;
@@ -162,6 +167,33 @@ button[type="submit"]:disabled {
 
 .car-card .card-images img:hover {
   transform: scale(1.05);
+}
+
+.car-card .btn-delete-image {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.car-card .image-wrapper:hover .btn-delete-image {
+  opacity: 1;
+}
+
+.car-card .btn-delete-image:hover {
+  background: var(--danger);
 }
 
 .car-card .card-actions {

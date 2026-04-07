@@ -29,7 +29,10 @@ async function loadCars() {
     if (car.images.length > 0) {
       imagesHtml = '<div class="card-images">' +
         car.images.map(img =>
-          `<img src="${escapeHtml(img.url)}" alt="Car photo" onclick="window.open('${escapeHtml(img.url)}', '_blank')">`
+          `<div class="image-wrapper">
+            <img src="${escapeHtml(img.url)}" alt="Car photo" onclick="window.open('${escapeHtml(img.url)}', '_blank')">
+            <button class="btn-delete-image" onclick="deleteImage(${img.id})" title="Delete photo">&times;</button>
+          </div>`
         ).join('') +
         '</div>';
     }
@@ -105,6 +108,18 @@ async function uploadPhotos(carId, files) {
       });
       if (!saveRes.ok) throw new Error('Failed to save photo');
     }
+    await loadCars();
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+}
+
+async function deleteImage(imageId) {
+  if (!confirm('Delete this photo?')) return;
+
+  try {
+    const res = await fetch(`/api/images/${imageId}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Failed to delete photo');
     await loadCars();
   } catch (err) {
     alert('Error: ' + err.message);
