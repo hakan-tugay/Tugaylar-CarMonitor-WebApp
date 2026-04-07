@@ -18,11 +18,11 @@
         <div class="dropdown">
           <button class="hamburger-btn" onclick="toggleDropdown()">&#9776;</button>
           <div id="dropdown-menu" class="dropdown-menu hidden">
-            <button onclick="showMainView(); closeDropdown()">Car View</button>
+            <button id="menu-car-view" onclick="showMainView(); closeDropdown()">Car View</button>
             <button id="manage-cars-btn" onclick="toggleCarsTable(); closeDropdown()">Table View</button>
             <button id="manage-locations-btn" onclick="toggleLocationsPanel(); closeDropdown()">Manage Locations</button>
             <button id="manage-users-btn" onclick="toggleUsersPanel(); closeDropdown()">Manage Users</button>
-            <hr class="dropdown-divider">
+            <hr id="admin-divider" class="dropdown-divider">
             <button onclick="logout(); closeDropdown()">Logout</button>
           </div>
         </div>

@@ -28,9 +28,11 @@ function showApp(username, role) {
   document.getElementById('user-info').classList.remove('hidden');
   document.getElementById('username-display').textContent = username;
   const isAdmin = role === 'admin';
-  document.getElementById('manage-users-btn').style.display = isAdmin ? '' : 'none';
-  document.getElementById('manage-locations-btn').style.display = isAdmin ? '' : 'none';
+  document.getElementById('menu-car-view').style.display = isAdmin ? '' : 'none';
   document.getElementById('manage-cars-btn').style.display = isAdmin ? '' : 'none';
+  document.getElementById('manage-locations-btn').style.display = isAdmin ? '' : 'none';
+  document.getElementById('manage-users-btn').style.display = isAdmin ? '' : 'none';
+  document.getElementById('admin-divider').style.display = isAdmin ? '' : 'none';
   if (!isAdmin) {
     document.getElementById('users-section').classList.add('hidden');
     document.getElementById('locations-section').classList.add('hidden');
