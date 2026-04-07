@@ -114,7 +114,7 @@ async function loadLocationsDatalist() {
 // --- Cars Table ---
 
 let carsTableData = [];
-let carsTableSort = { column: 'date', asc: false };
+let carsTableSort = { column: null, asc: false };
 
 function toggleCarsTable() {
   const section = document.getElementById('cars-table-section');
@@ -169,21 +169,33 @@ function renderCarsTable() {
   }
 
   const { column, asc } = carsTableSort;
-  data.sort((a, b) => {
+
+  function compare(a, b, col, ascending) {
     let va, vb;
-    if (column === 'date') {
+    if (col === 'date') {
       va = new Date(a.created_at).getTime();
       vb = new Date(b.created_at).getTime();
-    } else if (column === 'location') {
+    } else if (col === 'location') {
       va = (a.location || '').toLowerCase();
       vb = (b.location || '').toLowerCase();
     } else {
       va = (a.chassis || '').toLowerCase();
       vb = (b.chassis || '').toLowerCase();
     }
-    if (va < vb) return asc ? -1 : 1;
-    if (va > vb) return asc ? 1 : -1;
+    if (va < vb) return ascending ? -1 : 1;
+    if (va > vb) return ascending ? 1 : -1;
     return 0;
+  }
+
+  data.sort((a, b) => {
+    if (column) {
+      const result = compare(a, b, column, asc);
+      if (result !== 0) return result;
+    }
+    // Default: date desc, then location asc
+    const byDate = compare(a, b, 'date', false);
+    if (byDate !== 0) return byDate;
+    return compare(a, b, 'location', true);
   });
 
   // Update sort arrows
