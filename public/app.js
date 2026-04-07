@@ -27,6 +27,9 @@ function showApp(username) {
   document.getElementById('app-section').classList.remove('hidden');
   document.getElementById('user-info').classList.remove('hidden');
   document.getElementById('username-display').textContent = username;
+  const isAdmin = username.toLowerCase().includes('tugay');
+  document.getElementById('manage-users-btn').style.display = isAdmin ? '' : 'none';
+  if (!isAdmin) document.getElementById('users-section').classList.add('hidden');
   loadCars();
 }
 

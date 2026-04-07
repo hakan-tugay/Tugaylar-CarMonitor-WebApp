@@ -1,9 +1,9 @@
 const bcrypt = require('bcryptjs');
 const { getDb, ensureTables } = require('../../lib/db');
-const { createToken, requireAuth } = require('../../lib/auth');
+const { requireAdmin } = require('../../lib/auth');
 
 module.exports = async function handler(req, res) {
-  if (!requireAuth(req, res)) return;
+  if (!requireAdmin(req, res)) return;
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
