@@ -227,6 +227,11 @@ button[type="submit"]:disabled {
   align-items: center;
 }
 
+.car-card .card-actions > * {
+  flex: 1;
+  text-align: center;
+}
+
 .car-card .btn-add-photos {
   background: none;
   border: 1px solid var(--primary);
