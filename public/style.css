@@ -55,6 +55,10 @@ header p {
   font-size: 0.9rem;
 }
 
+#user-info.hidden {
+  display: none;
+}
+
 #username-display {
   opacity: 0.9;
 }
