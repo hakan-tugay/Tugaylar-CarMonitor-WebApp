@@ -1,6 +1,8 @@
 const { getDb, ensureTables } = require('../lib/db');
+const { requireAuth } = require('../lib/auth');
 
 module.exports = async function handler(req, res) {
+  if (!requireAuth(req, res)) return;
   await ensureTables();
   const sql = getDb();
 

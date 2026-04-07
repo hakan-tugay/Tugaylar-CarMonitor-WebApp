@@ -28,7 +28,14 @@ header {
   background: var(--primary);
   color: white;
   padding: 1.5rem 1rem;
-  text-align: center;
+}
+
+.header-content {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 header h1 {
@@ -39,6 +46,78 @@ header h1 {
 header p {
   opacity: 0.85;
   font-size: 0.95rem;
+}
+
+#user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+#username-display {
+  opacity: 0.9;
+}
+
+#logout-btn {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#logout-btn:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+/* Auth */
+#auth-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 120px);
+  padding: 1rem;
+}
+
+.auth-box {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  width: 100%;
+  max-width: 380px;
+}
+
+.auth-box h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.auth-error {
+  color: var(--danger);
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.auth-toggle {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.auth-toggle a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-toggle a:hover {
+  text-decoration: underline;
 }
 
 main {

@@ -8,10 +8,43 @@
 </head>
 <body>
   <header>
-    <h1>CarMonitor</h1>
-    <p>Track and browse new car records</p>
+    <div class="header-content">
+      <div>
+        <h1>CarMonitor</h1>
+        <p>Track and browse new car records</p>
+      </div>
+      <div id="user-info" class="hidden">
+        <span id="username-display"></span>
+        <button id="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </div>
   </header>
-  <main>
+
+  <!-- Auth Section -->
+  <section id="auth-section" class="hidden">
+    <div class="auth-box">
+      <h2 id="auth-title">Login</h2>
+      <form id="auth-form">
+        <div class="form-group">
+          <label for="auth-username">Username</label>
+          <input type="text" id="auth-username" required minlength="3">
+        </div>
+        <div class="form-group">
+          <label for="auth-password">Password</label>
+          <input type="password" id="auth-password" required minlength="4">
+        </div>
+        <p id="auth-error" class="auth-error hidden"></p>
+        <button type="submit" id="auth-submit">Login</button>
+      </form>
+      <p class="auth-toggle">
+        <span id="auth-toggle-text">Don't have an account?</span>
+        <a href="#" id="auth-toggle-link" onclick="toggleAuthMode(event)">Register</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- App Section -->
+  <main id="app-section" class="hidden">
     <section id="create-section">
       <h2>Add New Car</h2>
       <form id="car-form">

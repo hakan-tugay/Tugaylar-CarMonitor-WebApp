@@ -7,3 +7,5 @@ carmonitor.db-shm
 carmonitor.db-wal
 *.bak
 .claude/
+
+.vercel

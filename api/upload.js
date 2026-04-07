@@ -1,6 +1,8 @@
 const { put } = require('@vercel/blob');
+const { requireAuth } = require('../lib/auth');
 
 async function handler(req, res) {
+  if (!requireAuth(req, res)) return;
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

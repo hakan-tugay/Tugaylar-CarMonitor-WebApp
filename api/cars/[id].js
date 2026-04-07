@@ -1,7 +1,9 @@
 const { getDb, ensureTables } = require('../../lib/db');
 const { del } = require('@vercel/blob');
+const { requireAuth } = require('../../lib/auth');
 
 module.exports = async function handler(req, res) {
+  if (!requireAuth(req, res)) return;
   await ensureTables();
   const sql = getDb();
   const { id } = req.query;

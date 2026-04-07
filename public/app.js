@@ -3,8 +3,86 @@ const emptyMessage = document.getElementById('empty-message');
 const carForm = document.getElementById('car-form');
 let carsData = [];
 
+// --- Auth ---
+
+function getToken() {
+  return localStorage.getItem('token');
+}
+
+function authHeaders(extra = {}) {
+  const token = getToken();
+  const headers = { ...extra };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  return headers;
+}
+
+function showAuth() {
+  document.getElementById('auth-section').classList.remove('hidden');
+  document.getElementById('app-section').classList.add('hidden');
+  document.getElementById('user-info').classList.add('hidden');
+}
+
+function showApp(username) {
+  document.getElementById('auth-section').classList.add('hidden');
+  document.getElementById('app-section').classList.remove('hidden');
+  document.getElementById('user-info').classList.remove('hidden');
+  document.getElementById('username-display').textContent = username;
+  loadCars();
+}
+
+let isLoginMode = true;
+
+function toggleAuthMode(e) {
+  e.preventDefault();
+  isLoginMode = !isLoginMode;
+  document.getElementById('auth-title').textContent = isLoginMode ? 'Login' : 'Register';
+  document.getElementById('auth-submit').textContent = isLoginMode ? 'Login' : 'Register';
+  document.getElementById('auth-toggle-text').textContent = isLoginMode ? "Don't have an account?" : 'Already have an account?';
+  document.getElementById('auth-toggle-link').textContent = isLoginMode ? 'Register' : 'Login';
+  document.getElementById('auth-error').classList.add('hidden');
+}
+
+document.getElementById('auth-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = document.getElementById('auth-username').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const errorEl = document.getElementById('auth-error');
+  errorEl.classList.add('hidden');
+
+  const endpoint = isLoginMode ? '/api/auth/login' : '/api/auth/register';
+
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      errorEl.textContent = data.error || 'Authentication failed';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('username', data.username);
+    showApp(data.username);
+  } catch (err) {
+    errorEl.textContent = 'Connection error';
+    errorEl.classList.remove('hidden');
+  }
+});
+
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('username');
+  showAuth();
+}
+
+// --- App ---
+
 async function loadCars() {
-  const res = await fetch('/api/cars');
+  const res = await fetch('/api/cars', { headers: authHeaders() });
+  if (res.status === 401) { logout(); return; }
   const cars = await res.json();
 
   carsGrid.innerHTML = '';
@@ -75,10 +153,11 @@ async function createCar(e) {
   try {
     const carRes = await fetch('/api/cars', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ location })
     });
 
+    if (carRes.status === 401) { logout(); return; }
     if (!carRes.ok) throw new Error('Failed to create car');
 
     carForm.reset();
@@ -132,23 +211,23 @@ async function uploadPhotos(carId, files) {
 
   try {
     for (const file of files) {
-      // Step 1: Add watermark
       const watermarked = await addWatermark(file);
 
-      // Step 2: Upload to Vercel Blob
       const uploadRes = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
         method: 'POST',
+        headers: authHeaders(),
         body: watermarked,
       });
+      if (uploadRes.status === 401) { logout(); return; }
       if (!uploadRes.ok) throw new Error('Failed to upload photo');
       const blob = await uploadRes.json();
 
-      // Step 3: Save blob URL reference to the car record
       const saveRes = await fetch(`/api/cars/${carId}/images`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ url: blob.url, filename: file.name }),
       });
+      if (saveRes.status === 401) { logout(); return; }
       if (!saveRes.ok) throw new Error('Failed to save photo');
     }
     await loadCars();
@@ -176,7 +255,8 @@ async function deleteImage(imageId) {
   if (!confirm('Delete this photo?')) return;
 
   try {
-    const res = await fetch(`/api/images/${imageId}`, { method: 'DELETE' });
+    const res = await fetch(`/api/images/${imageId}`, { method: 'DELETE', headers: authHeaders() });
+    if (res.status === 401) { logout(); return; }
     if (!res.ok) throw new Error('Failed to delete photo');
     await loadCars();
   } catch (err) {
@@ -188,7 +268,8 @@ async function deleteCar(id) {
   if (!confirm('Are you sure you want to delete this car record?')) return;
 
   try {
-    const res = await fetch(`/api/cars/${id}`, { method: 'DELETE' });
+    const res = await fetch(`/api/cars/${id}`, { method: 'DELETE', headers: authHeaders() });
+    if (res.status === 401) { logout(); return; }
     if (!res.ok) throw new Error('Failed to delete car');
     await loadCars();
   } catch (err) {
@@ -252,5 +333,15 @@ document.addEventListener('keydown', (e) => {
   else if (e.key === 'Escape') closeLightbox();
 });
 
+// --- Init ---
 carForm.addEventListener('submit', createCar);
-document.addEventListener('DOMContentLoaded', loadCars);
+
+document.addEventListener('DOMContentLoaded', () => {
+  const token = getToken();
+  const username = localStorage.getItem('username');
+  if (token && username) {
+    showApp(username);
+  } else {
+    showAuth();
+  }
+});
