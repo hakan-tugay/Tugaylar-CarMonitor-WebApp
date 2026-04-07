@@ -30,6 +30,7 @@ function showApp(username) {
   const isAdmin = username.toLowerCase().includes('tugay');
   document.getElementById('manage-users-btn').style.display = isAdmin ? '' : 'none';
   document.getElementById('manage-locations-btn').style.display = isAdmin ? '' : 'none';
+  document.getElementById('manage-cars-btn').style.display = isAdmin ? '' : 'none';
   if (!isAdmin) {
     document.getElementById('users-section').classList.add('hidden');
     document.getElementById('locations-section').classList.add('hidden');
@@ -110,27 +111,127 @@ async function loadLocationsDatalist() {
   datalist.innerHTML = locations.map(l => `<option value="${escapeHtml(l.name)}">`).join('');
 }
 
+// --- Cars Table ---
+
+let carsTableData = [];
+let carsTableSort = { column: 'date', asc: false };
+
+function toggleCarsTable() {
+  const section = document.getElementById('cars-table-section');
+  const isVisible = !section.classList.contains('hidden');
+
+  if (isVisible) {
+    showMainView();
+  } else {
+    hideAllManagement();
+    section.classList.remove('hidden');
+    document.getElementById('create-section').classList.add('hidden');
+    document.getElementById('cars-section').classList.add('hidden');
+    loadCarsTable();
+  }
+}
+
+async function loadCarsTable() {
+  const res = await fetch('/api/cars', { headers: authHeaders() });
+  if (res.status === 401) { logout(); return; }
+  carsTableData = await res.json();
+  carsTableData = carsTableData.map(car => ({
+    ...car,
+    dateStr: new Date(car.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }),
+  }));
+  renderCarsTable();
+}
+
+function sortCarsTable(column) {
+  if (carsTableSort.column === column) {
+    carsTableSort.asc = !carsTableSort.asc;
+  } else {
+    carsTableSort.column = column;
+    carsTableSort.asc = true;
+  }
+  renderCarsTable();
+}
+
+function filterCarsTable() {
+  renderCarsTable();
+}
+
+function renderCarsTable() {
+  const search = document.getElementById('cars-table-search').value.toLowerCase();
+  let data = carsTableData;
+
+  if (search) {
+    data = data.filter(car =>
+      car.dateStr.toLowerCase().includes(search) ||
+      (car.location || '').toLowerCase().includes(search) ||
+      (car.chassis || '').toLowerCase().includes(search)
+    );
+  }
+
+  const { column, asc } = carsTableSort;
+  data.sort((a, b) => {
+    let va, vb;
+    if (column === 'date') {
+      va = new Date(a.created_at).getTime();
+      vb = new Date(b.created_at).getTime();
+    } else if (column === 'location') {
+      va = (a.location || '').toLowerCase();
+      vb = (b.location || '').toLowerCase();
+    } else {
+      va = (a.chassis || '').toLowerCase();
+      vb = (b.chassis || '').toLowerCase();
+    }
+    if (va < vb) return asc ? -1 : 1;
+    if (va > vb) return asc ? 1 : -1;
+    return 0;
+  });
+
+  // Update sort arrows
+  ['date', 'location', 'chassis'].forEach(col => {
+    const el = document.getElementById('sort-' + col);
+    if (col === column) {
+      el.textContent = asc ? ' \u25B2' : ' \u25BC';
+    } else {
+      el.textContent = '';
+    }
+  });
+
+  const tbody = document.getElementById('cars-table-body');
+  tbody.innerHTML = data.map(car => `
+    <tr>
+      <td>${escapeHtml(car.dateStr)}</td>
+      <td>${escapeHtml(car.location || '')}</td>
+      <td>${escapeHtml(car.chassis || '')}</td>
+    </tr>
+  `).join('');
+}
+
 // --- Location Management ---
+
+function hideAllManagement() {
+  document.getElementById('users-section').classList.add('hidden');
+  document.getElementById('locations-section').classList.add('hidden');
+  document.getElementById('cars-table-section').classList.add('hidden');
+}
+
+function showMainView() {
+  hideAllManagement();
+  document.getElementById('create-section').classList.remove('hidden');
+  document.getElementById('cars-section').classList.remove('hidden');
+}
 
 function toggleLocationsPanel() {
   const locationsSection = document.getElementById('locations-section');
-  const usersSection = document.getElementById('users-section');
-  const createSection = document.getElementById('create-section');
-  const carsSection = document.getElementById('cars-section');
   const isVisible = !locationsSection.classList.contains('hidden');
 
   if (isVisible) {
-    locationsSection.classList.add('hidden');
-    createSection.classList.remove('hidden');
-    carsSection.classList.remove('hidden');
+    showMainView();
     document.getElementById('manage-locations-btn').textContent = 'Manage Locations';
   } else {
+    hideAllManagement();
     locationsSection.classList.remove('hidden');
-    usersSection.classList.add('hidden');
-    createSection.classList.add('hidden');
-    carsSection.classList.add('hidden');
-    document.getElementById('manage-locations-btn').textContent = 'Back to Cars';
-    document.getElementById('manage-users-btn').textContent = 'Manage Users';
+    document.getElementById('create-section').classList.add('hidden');
+    document.getElementById('cars-section').classList.add('hidden');
     loadLocations();
   }
 }
@@ -209,23 +310,15 @@ async function deleteLocation(locationId) {
 
 function toggleUsersPanel() {
   const usersSection = document.getElementById('users-section');
-  const locationsSection = document.getElementById('locations-section');
-  const createSection = document.getElementById('create-section');
-  const carsSection = document.getElementById('cars-section');
   const isVisible = !usersSection.classList.contains('hidden');
 
   if (isVisible) {
-    usersSection.classList.add('hidden');
-    createSection.classList.remove('hidden');
-    carsSection.classList.remove('hidden');
-    document.getElementById('manage-users-btn').textContent = 'Manage Users';
+    showMainView();
   } else {
+    hideAllManagement();
     usersSection.classList.remove('hidden');
-    locationsSection.classList.add('hidden');
-    createSection.classList.add('hidden');
-    carsSection.classList.add('hidden');
-    document.getElementById('manage-users-btn').textContent = 'Back to Cars';
-    document.getElementById('manage-locations-btn').textContent = 'Manage Locations';
+    document.getElementById('create-section').classList.add('hidden');
+    document.getElementById('cars-section').classList.add('hidden');
     loadUsers();
   }
 }
