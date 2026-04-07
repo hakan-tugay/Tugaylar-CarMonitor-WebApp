@@ -224,12 +224,16 @@ button[type="submit"]:disabled {
 .car-card .card-actions {
   display: flex;
   gap: 0.5rem;
-  align-items: center;
+  align-items: stretch;
 }
 
 .car-card .card-actions > * {
   flex: 1;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .car-card .btn-add-photos {
