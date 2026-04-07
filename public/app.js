@@ -29,9 +29,9 @@ async function loadCars() {
     if (car.images.length > 0) {
       imagesHtml = '<div class="card-images">' +
         car.images.map(img =>
-          `<div class="image-wrapper">
-            <img src="${escapeHtml(img.url)}" alt="Car photo" onclick="openLightbox('${escapeHtml(img.url)}')">
-            <button class="btn-delete-image" onclick="deleteImage(${img.id})" title="Delete photo">&times;</button>
+          `<div class="image-wrapper" onclick="onImageClick(this, '${escapeHtml(img.url)}', ${img.id})">
+            <img src="${escapeHtml(img.url)}" alt="Car photo">
+            <span class="delete-overlay">&times;</span>
           </div>`
         ).join('') +
         '</div>';
@@ -49,6 +49,7 @@ async function loadCars() {
             Add Photos
             <input type="file" multiple accept="image/*" onchange="uploadPhotos(${car.id}, this.files)" hidden>
           </label>
+          ${car.images.length > 0 ? `<button class="btn-edit-photos" onclick="toggleDeleteMode(this)">Edit Photos</button>` : ''}
           <button class="btn-delete" onclick="deleteCar(${car.id})">Delete</button>
         </div>
       </div>
@@ -111,6 +112,21 @@ async function uploadPhotos(carId, files) {
     await loadCars();
   } catch (err) {
     alert('Error: ' + err.message);
+  }
+}
+
+function toggleDeleteMode(btn) {
+  const card = btn.closest('.car-card');
+  const isActive = card.classList.toggle('delete-mode');
+  btn.textContent = isActive ? 'Done' : 'Edit Photos';
+}
+
+function onImageClick(wrapper, url, imageId) {
+  const card = wrapper.closest('.car-card');
+  if (card.classList.contains('delete-mode')) {
+    deleteImage(imageId);
+  } else {
+    openLightbox(url);
   }
 }
 
