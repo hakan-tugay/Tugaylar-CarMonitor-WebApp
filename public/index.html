@@ -17,7 +17,11 @@
       <form id="car-form">
         <div class="form-group">
           <label for="location">Location</label>
-          <input type="text" id="location" placeholder="Enter location..." required>
+          <select id="location" required>
+            <option value="">Select location...</option>
+            <option value="Pendik">Pendik</option>
+            <option value="Yalova">Yalova</option>
+          </select>
         </div>
         <button type="submit">Add Car</button>
       </form>
