@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarMonitor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>CarMonitor</h1>
+    <p>Track and browse new car records</p>
+  </header>
+  <main>
+    <section id="create-section">
+      <h2>Add New Car</h2>
+      <form id="car-form">
+        <div class="form-group">
+          <label for="location">Location</label>
+          <input type="text" id="location" placeholder="Enter location..." required>
+        </div>
+        <button type="submit">Add Car</button>
+      </form>
+    </section>
+    <section id="cars-section">
+      <h2>Car Records</h2>
+      <div id="cars-grid"></div>
+      <p id="empty-message" class="hidden">No car records yet. Add one above!</p>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
