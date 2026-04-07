@@ -90,20 +90,57 @@ async function createCar(e) {
   }
 }
 
+function addWatermark(file) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+
+      const dateStr = new Date().toLocaleDateString(undefined, {
+        year: 'numeric', month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+
+      const fontSize = Math.max(16, Math.floor(img.width / 30));
+      ctx.font = `bold ${fontSize}px sans-serif`;
+      const padding = fontSize * 0.5;
+      const textMetrics = ctx.measureText(dateStr);
+      const x = img.width - textMetrics.width - padding;
+      const y = img.height - padding;
+
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      ctx.fillRect(x - padding * 0.5, y - fontSize, textMetrics.width + padding, fontSize + padding * 0.5);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.fillText(dateStr, x, y);
+
+      canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.92);
+    };
+    img.src = URL.createObjectURL(file);
+  });
+}
+
 async function uploadPhotos(carId, files) {
   if (!files || files.length === 0) return;
 
   try {
     for (const file of files) {
-      // Step 1: Upload file to Vercel Blob
+      // Step 1: Add watermark
+      const watermarked = await addWatermark(file);
+
+      // Step 2: Upload to Vercel Blob
       const uploadRes = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
         method: 'POST',
-        body: file,
+        body: watermarked,
       });
       if (!uploadRes.ok) throw new Error('Failed to upload photo');
       const blob = await uploadRes.json();
 
-      // Step 2: Save blob URL reference to the car record
+      // Step 3: Save blob URL reference to the car record
       const saveRes = await fetch(`/api/cars/${carId}/images`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
