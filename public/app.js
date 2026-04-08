@@ -37,6 +37,8 @@ function showApp(username, role) {
     document.getElementById('users-section').classList.add('hidden');
     document.getElementById('locations-section').classList.add('hidden');
   }
+  const isViewer = role === 'viewer';
+  document.getElementById('create-section').style.display = isViewer ? 'none' : '';
   loadLocationsDatalist();
   loadCars();
 }
@@ -461,10 +463,8 @@ function renderCarCard(car) {
       '</div>';
   }
 
-  card.innerHTML = `
-    <div class="card-body">
-      ${car.chassis ? `<div class="card-chassis">${escapeHtml(car.chassis)}</div>` : ''}
-      ${imagesHtml}
+  const currentRole = localStorage.getItem('role') || 'editor';
+  const actionsHtml = currentRole === 'viewer' ? '' : `
       <div class="card-actions">
         <label class="btn-add-photos">
           Add Photos
@@ -472,7 +472,13 @@ function renderCarCard(car) {
         </label>
         ${car.images.length > 0 ? `<button class="btn-edit-photos" onclick="toggleDeleteMode(this)">Edit Photos</button>` : ''}
         <button class="btn-delete" onclick="deleteCar(${car.id})">Delete</button>
-      </div>
+      </div>`;
+
+  card.innerHTML = `
+    <div class="card-body">
+      ${car.chassis ? `<div class="card-chassis">${escapeHtml(car.chassis)}</div>` : ''}
+      ${imagesHtml}
+      ${actionsHtml}
     </div>
   `;
 

@@ -12,7 +12,8 @@ module.exports = async function handler(req, res) {
   const sql = getDb();
 
   const { username, password, role } = req.body;
-  const userRole = (role === 'admin') ? 'admin' : 'editor';
+  const validRoles = ['admin', 'editor', 'viewer'];
+  const userRole = validRoles.includes(role) ? role : 'editor';
   if (!username || !password) {
     return res.status(400).json({ error: 'Username and password are required' });
   }
