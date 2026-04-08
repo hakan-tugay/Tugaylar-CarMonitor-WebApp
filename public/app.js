@@ -27,6 +27,9 @@ function showApp(username, role) {
   document.getElementById('app-section').classList.remove('hidden');
   document.getElementById('user-info').classList.remove('hidden');
   document.getElementById('username-display').textContent = username;
+  hideAllManagement();
+  document.getElementById('create-section').classList.remove('hidden');
+  document.getElementById('cars-section').classList.remove('hidden');
   const isAdmin = role === 'admin';
   document.getElementById('menu-car-view').style.display = isAdmin ? '' : 'none';
   document.getElementById('manage-cars-btn').style.display = isAdmin ? '' : 'none';
