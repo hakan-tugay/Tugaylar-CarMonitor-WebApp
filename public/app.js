@@ -732,6 +732,26 @@ document.addEventListener('keydown', (e) => {
   else if (e.key === 'Escape') closeLightbox();
 });
 
+// Touch swipe for lightbox
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.getElementById('lightbox').addEventListener('touchstart', (e) => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.getElementById('lightbox').addEventListener('touchend', (e) => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+  if (dx > 0) {
+    lightboxPrev(e);
+  } else {
+    lightboxNext(e);
+  }
+}, { passive: true });
+
 // --- Init ---
 carForm.addEventListener('submit', createCar);
 
