@@ -173,7 +173,8 @@ function renderCarsTable() {
     data = data.filter(car =>
       car.dateStr.toLowerCase().includes(search) ||
       (car.location || '').toLowerCase().includes(search) ||
-      (car.chassis || '').toLowerCase().includes(search)
+      (car.chassis || '').toLowerCase().includes(search) ||
+      (car.created_by || '').toLowerCase().includes(search)
     );
   }
 
@@ -187,9 +188,12 @@ function renderCarsTable() {
     } else if (col === 'location') {
       va = (a.location || '').toLowerCase();
       vb = (b.location || '').toLowerCase();
-    } else {
+    } else if (column === 'chassis') {
       va = (a.chassis || '').toLowerCase();
       vb = (b.chassis || '').toLowerCase();
+    } else {
+      va = (a.created_by || '').toLowerCase();
+      vb = (b.created_by || '').toLowerCase();
     }
     if (va < vb) return ascending ? -1 : 1;
     if (va > vb) return ascending ? 1 : -1;
@@ -208,7 +212,7 @@ function renderCarsTable() {
   });
 
   // Update sort arrows
-  ['date', 'location', 'chassis'].forEach(col => {
+  ['date', 'location', 'chassis', 'createdBy'].forEach(col => {
     const el = document.getElementById('sort-' + col);
     if (col === column) {
       el.textContent = asc ? ' \u25B2' : ' \u25BC';
@@ -223,6 +227,7 @@ function renderCarsTable() {
       <td>${escapeHtml(car.dateStr)}</td>
       <td>${escapeHtml(car.location || '')}</td>
       <td>${escapeHtml(car.chassis || '')}</td>
+      <td>${escapeHtml(car.created_by || '')}</td>
     </tr>
   `).join('');
 }

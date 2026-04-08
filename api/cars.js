@@ -2,7 +2,8 @@ const { getDb, ensureTables } = require('../lib/db');
 const { requireAuth } = require('../lib/auth');
 
 module.exports = async function handler(req, res) {
-  if (!requireAuth(req, res)) return;
+  const user = requireAuth(req, res);
+  if (!user) return;
   await ensureTables();
   const sql = getDb();
 
@@ -34,7 +35,7 @@ module.exports = async function handler(req, res) {
     }
 
     const rows = await sql`
-      INSERT INTO cars (location, chassis) VALUES (${location.trim()}, ${chassis.trim()})
+      INSERT INTO cars (location, chassis, created_by) VALUES (${location.trim()}, ${chassis.trim()}, ${user.username})
       RETURNING *
     `;
     return res.status(201).json({ ...rows[0], images: [] });
