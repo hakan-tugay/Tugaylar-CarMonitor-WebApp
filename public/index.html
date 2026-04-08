@@ -74,8 +74,9 @@
     <!-- Cars Table -->
     <section id="cars-table-section" class="hidden">
       <h2>Table View</h2>
-      <div class="table-search">
+      <div class="table-toolbar">
         <input type="text" id="cars-table-search" placeholder="Search..." oninput="filterCarsTable()">
+        <button class="btn-export" onclick="exportToExcel()">Export to Excel</button>
       </div>
       <div class="table-responsive">
         <table class="cars-data-table" id="cars-data-table">

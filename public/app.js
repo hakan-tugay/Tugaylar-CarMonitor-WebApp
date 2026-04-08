@@ -222,6 +222,27 @@ function renderCarsTable() {
   `).join('');
 }
 
+function exportToExcel() {
+  const table = document.getElementById('cars-data-table');
+  const rows = table.querySelectorAll('tr');
+  let csv = '';
+  rows.forEach(row => {
+    const cells = row.querySelectorAll('th, td');
+    const rowData = Array.from(cells).map(cell => {
+      let text = cell.textContent.trim().replace(/"/g, '""');
+      return '"' + text + '"';
+    });
+    csv += rowData.join(',') + '\n';
+  });
+
+  const BOM = '\uFEFF';
+  const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'cars-' + new Date().toISOString().slice(0, 10) + '.csv';
+  link.click();
+}
+
 // --- Location Management ---
 
 function hideAllManagement() {

@@ -228,12 +228,15 @@ header p {
   display: none;
 }
 
-.table-search {
+.table-toolbar {
+  display: flex;
+  gap: 0.5rem;
   margin-bottom: 1rem;
+  align-items: center;
 }
 
-.table-search input {
-  width: 100%;
+.table-toolbar input {
+  flex: 1;
   padding: 0.5rem 0.8rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -241,8 +244,24 @@ header p {
   outline: none;
 }
 
-.table-search input:focus {
+.table-toolbar input:focus {
   border-color: var(--primary);
+}
+
+.btn-export {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.btn-export:hover {
+  background: var(--primary-hover);
 }
 
 .table-responsive {
