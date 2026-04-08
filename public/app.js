@@ -504,7 +504,7 @@ async function loadCars() {
   const groups = {};
   for (const car of cars) {
     const dateKey = getDateKey(car.created_at);
-    const locationKey = (car.location || '').toLowerCase();
+    const locationKey = (car.location || '').toLowerCase().replace(/\s+/g, '').replace(/[-_]+/g, '-');
     if (!groups[dateKey]) groups[dateKey] = {};
     if (!groups[dateKey][locationKey]) groups[dateKey][locationKey] = { name: car.location, cars: [] };
     groups[dateKey][locationKey].cars.push(car);
