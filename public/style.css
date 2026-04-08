@@ -466,15 +466,14 @@ button[type="submit"]:disabled {
 #cars-grid {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
 
 .group-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 1.25rem;
-  padding-bottom: 0.4rem;
+  margin-top: 0.75rem;
+  padding-bottom: 0.25rem;
   border-bottom: 2px solid var(--primary);
   font-size: 1rem;
   font-weight: 600;
@@ -495,8 +494,8 @@ button[type="submit"]:disabled {
 .cars-group-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
-  margin-top: 0.5rem;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .car-card {
