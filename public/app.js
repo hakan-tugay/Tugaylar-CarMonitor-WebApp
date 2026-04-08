@@ -76,8 +76,8 @@ document.getElementById('auth-form').addEventListener('submit', async (e) => {
     }
     localStorage.setItem('token', data.token);
     localStorage.setItem('username', data.username);
-    localStorage.setItem('role', data.role || 'user');
-    showApp(data.username, data.role || 'user');
+    localStorage.setItem('role', data.role || 'editor');
+    showApp(data.username, data.role || 'editor');
   } catch (err) {
     errorEl.textContent = 'Connection error';
     errorEl.classList.remove('hidden');
@@ -380,7 +380,7 @@ async function loadUsers() {
       const isSelf = u.username === currentUsername;
       return `<tr>
         <td>${escapeHtml(u.username)}${isSelf ? ' (you)' : ''}</td>
-        <td>${escapeHtml(u.role || 'user')}</td>
+        <td>${escapeHtml(u.role || 'editor')}</td>
         <td>${date}</td>
         <td>${isSelf ? '' : `<button class="btn-delete-user" onclick="deleteUser(${u.id})">Delete</button>`}</td>
       </tr>`;
@@ -723,7 +723,7 @@ carForm.addEventListener('submit', createCar);
 document.addEventListener('DOMContentLoaded', () => {
   const token = getToken();
   const username = localStorage.getItem('username');
-  const role = localStorage.getItem('role') || 'user';
+  const role = localStorage.getItem('role') || 'editor';
   if (token && username) {
     showApp(username, role);
   } else {
