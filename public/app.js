@@ -498,21 +498,22 @@ async function loadCars() {
   const groups = {};
   for (const car of cars) {
     const dateKey = getDateKey(car.created_at);
+    const locationKey = (car.location || '').toLowerCase();
     if (!groups[dateKey]) groups[dateKey] = {};
-    if (!groups[dateKey][car.location]) groups[dateKey][car.location] = [];
-    groups[dateKey][car.location].push(car);
+    if (!groups[dateKey][locationKey]) groups[dateKey][locationKey] = { name: car.location, cars: [] };
+    groups[dateKey][locationKey].cars.push(car);
   }
 
   for (const [dateKey, locations] of Object.entries(groups)) {
-    for (const [location, locationCars] of Object.entries(locations)) {
+    for (const group of Object.values(locations)) {
       const groupHeader = document.createElement('div');
       groupHeader.className = 'group-header';
-      groupHeader.innerHTML = `<span class="group-date">${escapeHtml(dateKey)}</span><span class="group-location">${escapeHtml(location)}</span>`;
+      groupHeader.innerHTML = `<span class="group-date">${escapeHtml(dateKey)}</span><span class="group-location">${escapeHtml(group.name)}</span>`;
       carsGrid.appendChild(groupHeader);
 
       const grid = document.createElement('div');
       grid.className = 'cars-group-grid';
-      for (const car of locationCars) {
+      for (const car of group.cars) {
         grid.appendChild(renderCarCard(car));
       }
       carsGrid.appendChild(grid);
